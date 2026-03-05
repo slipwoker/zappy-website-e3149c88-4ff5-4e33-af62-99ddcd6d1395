@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Meet Anastacia&#39;s Healing Journey — Rooted in Love</title>
+    <meta name="description" content="Learn how Anastacia, mother of two, created Rooted in Love to celebrate the beautiful chaos of motherhood through indigenous-inspired themes and love-centered parenting.">
+    <meta name="keywords" content="Rooted in Love, Anastacia motherhood, indigenous-inspired parenting, mothers, healing motherhood journey">
+    
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'e3149c88-4ff5-4e33-af62-99ddcd6d1395',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="Meet Anastacia's Healing Journey — Rooted in Love">
+  <meta property="og:description" content="Learn how Anastacia, mother of two, created Rooted in Love to celebrate the beautiful chaos of motherhood through indigenous-inspired themes and love-centered parenting.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Meet Anastacia's Healing Journey — Rooted in Love">
+  <meta name="twitter:description" content="Learn how Anastacia, mother of two, created Rooted in Love to celebrate the beautiful chaos of motherhood through indigenous-inspired themes and love-centered parenting.">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: #333 !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))), .sub-menu:not(:has(li)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .sub-menu.mobile-expanded { max-height: 500px !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-dark) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-dark) !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-dark) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      #mic-access-tool-general-button, .mic-access-tool-general-button,
+      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      }
+    </style>
+</head>
+<body>
+
+  <nav class="navbar">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewbox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewbox="0 0 24 24" fill="none" style="display:none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+  
+  <button class="phone-header-btn" aria-label="Call">
+    <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+  
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="/" class="logo-link">
+        <img src="/assets/business-logo.webp" alt="Rooted in Love" class="logo">
+      </a>
+    </div>
+    
+    <ul class="nav-menu" id="navMenu"><li><a href="/about">About</a></li><li><a href="/offerings">Offerings</a></li></ul>
+    
+    <div class="nav-cta-container">
+      <a href="/contact" class="nav-cta-btn">Contact</a>
+    </div>
+  </div>
+</nav>
+  
+  <main>
+    <section class="about-intro-section" data-layout-spec="About-intro">
+  <div class="about-intro-container">
+    <!-- Top Editorial Block -->
+    <div class="about-intro-editorial">
+      <div class="about-intro-vine-flourish" aria-hidden="true">
+        <svg data-no-icon-edit="true" width="80" height="80" viewbox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10,70 Q15,65 20,62 Q25,59 28,55 Q32,50 35,45 Q38,40 42,38 Q45,36 48,35 L50,34 M48,35 Q50,32 52,28 Q54,24 55,20 Q56,16 56,12 M50,34 L52,36 Q54,38 56,39 Q58,40 60,40.5 M42,38 Q40,40 38,43 Q36,46 35,50 M35,50 Q32,48 28,47 Q24,46 20,46" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"></path>
+          <circle cx="56" cy="12" r="2.5" fill="currentColor" opacity="0.3"></circle>
+          <circle cx="60" cy="40.5" r="2" fill="currentColor" opacity="0.3"></circle>
+          <circle cx="20" cy="46" r="2" fill="currentColor" opacity="0.3"></circle>
+        </svg>
+      </div>
+      <h1>A Journey Rooted in Love</h1>
+      <p>This brand began in the quiet moments between chaos—when motherhood felt both sacred and overwhelming. It's a space where healing meets creativity, where we celebrate the beautiful complexity of raising children with intention and love.</p>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="about-intro-columns">
+      <div class="about-intro-text-column">
+        <p>Created by Anastacia, a mother of two, Rooted in Love emerged from a deep desire to honor the indigenous wisdom of nurturing sacred children. Each design, each illustration, carries the gentle strength of mothers who choose love-centered parenting even when the world feels heavy.</p>
+        <p>Through soft botanical art, delicate feather motifs, and hand-drawn strawberry vines, this brand offers a peaceful escape—a reminder that motherhood is both an ancient practice and a daily act of courage. Here, we root ourselves in what matters most: connection, healing, and the profound beauty of raising the next generation with grace.</p>
+      </div>
+      <div class="about-intro-image-column">
+        <div class="about-intro-image-frame">
+          <img data-placeholder="about-intro-portrait" data-context="Warm, intimate portrait of a mother in soft natural light, holding or embracing a young child, both looking peaceful and connected. Soft focus background with botanical elements like dried flowers or natural textures. Earthy, feminine aesthetic with cream and warm tones. Lifestyle photography style that feels authentic and tender, capturing a quiet moment of motherhood." width="600" height="750" src="/assets/site-about-intro-portrait.webp" alt="Anastacia with her children in a tender moment of connection">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Gradient Divider -->
+  <div class="about-intro-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 120" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="about-intro-fade" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F6F0E6" stop-opacity="1"></stop>
+          <stop offset="50%" stop-color="#3A3538" stop-opacity="1"></stop>
+          <stop offset="100%" stop-color="#121113" stop-opacity="1"></stop>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="1200" height="120" fill="url(#about-intro-fade)"></rect>
+    </svg>
+  </div>
+</section>
+
+<section class="about-founder-story-section" data-layout-spec="About-founder-story">
+  <div class="about-founder-story-container">
+    <div class="about-founder-story-content">
+      <h2>A Mother's Journey to Sacred Roots</h2>
+      <p>It started in the quiet hours—those moments between midnight feedings and dawn light, when the world felt impossibly still and my heart impossibly full. Motherhood cracked me open in ways I never expected, revealing wounds I didn't know existed and strength I never knew I had.</p>
+      <p>Through the sleepless nights and tender mornings, I discovered that healing isn't linear. It's woven into the everyday—the gentle rhythm of rocking a baby to sleep, the sacred pause before answering a toddler's question, the intentional choice to parent from love rather than fear. Each small moment became a thread in a larger tapestry of transformation.</p>
+      <p>Creativity became my anchor. In the margins of motherhood, I found myself drawing feathers and botanical forms, creating spaces that honored both the chaos and the beauty. What began as personal healing evolved into something I felt called to share—a gentle invitation for other mothers to root their days in love, to find the sacred in the ordinary, to raise their children with intention and grace.</p>
+      <h3>Make the everyday sacred.</h3>
+    </div>
+    <div class="about-founder-story-imagery">
+      <div class="about-founder-story-image-wrapper">
+        <img data-placeholder="about-founder-story-image-1" data-context="Intimate low-light lifestyle photograph of a mother's hands gently holding a small botanical sprig or feather, warm candlelight creating soft highlights on skin, dark moody background with bokeh, peaceful and contemplative mood, shallow depth of field, film grain texture, earthy tones with warm golden highlights, motherhood aesthetic, sacred moment" width="600" height="700" src="/assets/site-about-founder-story-image-1.webp" alt="Mother's hands holding botanical element in warm candlelight">
+      </div>
+      <div class="about-founder-story-divider-art">
+        <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 200 60" preserveaspectratio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <!-- Delicate botanical ink illustration: strawberry vine with leaves and small flower -->
+          <g stroke="currentColor" fill="none" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Main vine stem -->
+            <path d="M20,30 Q60,25 100,30 T180,30" opacity="0.6"></path>
+            <!-- Left strawberry leaf cluster -->
+            <path d="M40,28 Q38,22 35,20 M40,28 Q42,22 45,20 M40,28 Q40,22 40,18"></path>
+            <!-- Center small flower -->
+            <circle cx="100" cy="26" r="3" opacity="0.7"></circle>
+            <circle cx="100" cy="26" r="1.5" fill="currentColor" opacity="0.4"></circle>
+            <path d="M97,26 L103,26 M100,23 L100,29" opacity="0.5"></path>
+            <!-- Right leaf detail -->
+            <path d="M160,32 Q158,38 155,42 M160,32 Q162,38 165,42 M160,32 Q160,38 160,42"></path>
+            <!-- Delicate tendrils -->
+            <path d="M70,28 Q72,24 70,20" opacity="0.4"></path>
+            <path d="M130,32 Q132,36 130,40" opacity="0.4"></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="about-founder-story-bottom-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 80" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,50 Q100,45 200,52 Q250,48 300,55 Q400,50 500,58 Q600,52 700,60 Q800,55 900,62 Q1000,58 1100,65 Q1150,62 1200,68 L1200,80 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="about-values-section" data-layout-spec="About-values">
+  <div class="about-values-container">
+    <div class="about-values-header">
+      <h2>Our Guiding Values</h2>
+      <p>These core principles shape everything we create at Rooted in Love—from the stories we share to the products we craft. Each value reflects our commitment to nurturing sacred motherhood with intention, creativity, and gentle strength.</p>
+    </div>
+    
+    <div class="about-values-grid">
+      <article class="value-card">
+        <h3>Rooted Love</h3>
+        <p>Every creation begins with love—the kind that grounds us in our purpose and connects us to our children, our heritage, and the earth beneath our feet. We believe motherhood is a sacred journey rooted in unconditional love and deep connection.</p>
+      </article>
+      
+      <article class="value-card">
+        <h3>Gentle Strength</h3>
+        <p>True strength doesn't need to be loud. It lives in the quiet moments of patience, the tender acts of care, and the resilience we carry as mothers. We honor the soft power that sustains families and nurtures generations.</p>
+      </article>
+      
+      <article class="value-card">
+        <h3>Sacred Creativity</h3>
+        <p>Creativity is our birthright and our healing practice. Through art, storytelling, and handmade beauty, we reclaim our voices and celebrate the divine feminine. Every brushstroke and word becomes an act of sacred expression.</p>
+      </article>
+    </div>
+  </div>
+  
+  <div class="about-values-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 40" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <path id="strawberry-vine" d="M1150,15 Q1155,12 1160,15 L1165,20 Q1170,22 1175,20 L1180,15 M1168,18 Q1170,20 1172,18"></path>
+      </defs>
+      <path d="M0,40 L0,20 L1140,20 L1200,20 L1200,40 Z" fill="#0E0D0C"></path>
+      <line x1="0" y1="20" x2="1140" y2="20" stroke="#B07A52" stroke-width="1.5" stroke-dasharray="8,4"></line>
+      <use href="#strawberry-vine" stroke="#B07A52" stroke-width="1.5" fill="none"></use>
+    </svg>
+  </div>
+</section>
+
+<section class="about-process-section" data-layout-spec="About-process">
+  <div class="about-process-container">
+    <div class="about-process-content">
+      <div class="about-process-intro">
+        <h2>How We Create Together</h2>
+        <p>Every piece begins with intention and unfolds through connection. From the first spark of an idea to the moment it finds its home, each step is rooted in love, care, and the sacred journey of motherhood.</p>
+      </div>
+
+      <div class="about-process-steps">
+        <div class="about-process-step">
+          <svg class="about-process-separator" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 120 2" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,1 Q30,0.5 60,1 T120,1" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.3"></path>
+          </svg>
+          <h3>Discover</h3>
+          <p>We begin by listening—to your story, your needs, and the quiet whispers of what your heart is calling for. This is where inspiration takes root, where we explore themes of motherhood, healing, and sacred connection.</p>
+        </div>
+
+        <div class="about-process-step">
+          <svg class="about-process-separator" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 120 2" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,1 Q30,1.5 60,1 T120,1" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.3"></path>
+          </svg>
+          <h3>Root</h3>
+          <p>Ideas settle and deepen. We gather inspiration from indigenous wisdom, botanical beauty, and the tender strength of motherhood. This phase is about grounding the vision in authenticity and intention.</p>
+        </div>
+
+        <div class="about-process-step">
+          <svg class="about-process-separator" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 120 2" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,1 Q30,0.8 60,1 T120,1" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.3"></path>
+          </svg>
+          <h3>Create</h3>
+          <p>With gentle hands and focused heart, we bring the vision to life. Whether it's hand-drawn illustrations, thoughtful product design, or curated creative resources, every detail is crafted with care and reverence for the motherhood journey.</p>
+        </div>
+
+        <div class="about-process-mobile-image">
+          <img data-placeholder="about-process-image-1" data-context="Soft-focus still life photograph of a mother" s="" creative="" workspace:="" delicate="" feather="" quill,="" botanical="" sketches="" on="" cream="" paper,="" dried="" strawberry="" vine,="" soft="" natural="" light="" from="" window,="" feminine="" and="" peaceful="" aesthetic="" for="" motherhood="" lifestyle="" brand'="" width="600" height="400" src="/assets/site-about-process-image-1.webp" alt="Creative workspace with botanical sketches and natural elements">
+        </div>
+
+        <div class="about-process-step">
+          <svg class="about-process-separator" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 120 2" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,1 Q30,1.2 60,1 T120,1" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.3"></path>
+          </svg>
+          <h3>Share</h3>
+          <p>The creation finds its way to you—a gentle offering meant to support, inspire, and celebrate the beautiful chaos of raising sacred children. This is where our work becomes part of your story, rooted in love and shared with purpose.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-process-image-wrapper">
+      <img data-placeholder="about-process-image-1" data-context="Soft-focus still life photograph of a mother" s="" creative="" workspace:="" delicate="" feather="" quill,="" botanical="" sketches="" on="" cream="" paper,="" dried="" strawberry="" vine,="" soft="" natural="" light="" from="" window,="" feminine="" and="" peaceful="" aesthetic="" for="" motherhood="" lifestyle="" brand'="" width="600" height="400" src="/assets/site-about-process-image-1.webp" alt="Creative workspace with botanical sketches and natural elements">
+    </div>
+  </div>
+
+  <div class="about-process-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 80" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,20 L1200,80 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="about-cta-section" data-layout-spec="About-cta">
+  <div class="about-cta-container">
+    <div class="about-cta-divider">
+      <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 120 2" xmlns="http://www.w3.org/2000/svg" preserveaspectratio="none">
+        <path d="M0,1 Q15,0.3 30,1 T60,1 T90,1 Q105,0.3 120,1" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.4"></path>
+      </svg>
+    </div>
+    <h2 class="about-cta-heading">Let's Connect</h2>
+    <p class="about-cta-text">Whether you have questions about our products, want to discuss a custom collaboration, or simply wish to share your motherhood journey, I'd love to hear from you. Rooted in Love is built on connection and community.</p>
+    <a href="/contact" class="about-cta-button">Get in Touch</a>
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-top">
+      <div class="footer-column footer-about">
+        <img src="/assets/business-logo.webp" alt="Rooted in Love" class="logo">
+        <p class="footer-tagline">Celebrating creativity and mindful living through thoughtfully curated products.</p>
+      </div>
+      
+      <div class="footer-column footer-links">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-nav">
+          <li><a href="/about">About</a></li>
+          <li><a href="/offerings">Offerings</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-contact">
+        <h3 class="footer-heading">Get in Touch</h3>
+        <ul class="contact-list">
+          <li><i class="fas fa-envelope"></i> <a href="mailto:[business_email]">[business_email]</a></li>
+          <li><i class="fas fa-phone"></i> <a href="tel:[business_phone]">[business_phone]</a></li>
+          <li><a href="/"><i class="fas fa-map-marker-alt"></i> <span>[business_address]</span></a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-social">
+        <h3 class="footer-heading">Connect With Us</h3>
+        <div class="social-links">
+          <a href="[facebook_handle]" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="[instagram_handle]" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="[whatsapp_handle]" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <p class="copyright">© 2026 Rooted in Love. All rights reserved.</p>
+      </div>
+      <div class="footer-bottom-right">
+        <ul class="legal-links">
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/accessibility">Accessibility</a></li>
+        </ul>
+        <a href="https://zappy5.com" target="_blank" class="zappy-attribution">Generated by Zappy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+</body>
+</html>

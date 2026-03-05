@@ -1,0 +1,47 @@
+# Business — Generative Engine Optimization Map
+
+---
+
+## Pages
+
+### Home
+https://example.com
+Discover Rooted in Love, a heartfelt motherhood lifestyle brand offering indigenous-inspired creative products, free printable art, and gentle parenting wisdom for mothers raising sacred children.
+
+### About
+https://example.com/about
+Learn how Anastacia, mother of two, created Rooted in Love to celebrate the beautiful chaos of motherhood through indigenous-inspired themes and love-centered parenting.
+
+### Offerings
+https://example.com/offerings
+Browse our collection of soft, feminine lifestyle products featuring delicate feather line art, strawberry vines, and botanical illustrations designed for mothers seeking peaceful inspiration.
+
+### Contact
+https://example.com/contact
+Reach out to Rooted in Love and join a community of mothers embracing gentle strength, sacred roots, and the beautiful journey of raising children with intention and love.
+
+## Legal & Policy
+
+### Privacy Policy
+https://example.com/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://example.com/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://example.com/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+# Business Context (for LLM understanding)
+
+## About Business
+---
+
+# Additional Resources
+
+- **Sitemap**: https://example.com/sitemap.xml
+- **Robots.txt**: https://example.com/robots.txt
